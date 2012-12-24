@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+        <meta charset="UTF-8">
+		<title>Untitled Document</title>
+
+	<style></style>
+
+	<script src="jquery-1.4.min.js"></script>
+	<script src="jquery.speedometer.js"></script>
+	<script src="jquery.jqcanvas-modified.js"></script>
+	<script src="excanvas-modified.js"></script>
+
+	<script>
+		$(function(){
+          $('#test').speedometer({ percentage: 0});
+
+          if(!navigator.geolocation){ alert('navigator.geolocation is not defined.'); return; }
+          navigator.geolocation.watchPosition(
+                   function(position){
+                        $('#test').speedometer({ percentage: Math.round( position.coords.speed )|| 0 });
+                   } ,
+                   function(){
+                        alert('Error!');
+                   }
+                   );
+        });
+//		$(function(){
+//			$('#test').speedometer();
+
+//			$('.changeSpeedometer').click(function(){
+//				$('#test').speedometer({ percentage: $('.speedometer').val() || 0 });
+//			});
+//          	$('#test').speedometer({ percentage: 10 || 0 });
+//		});
+        //GPS精度確認
+	</script>		
+    
+    
+	</head>
+	
+	<body><br />
+<br />
+        <br />
+
+<!--
+        <input type="text" class="speedometer" value="90"></input>
+		<button class="changeSpeedometer">Submit</button><br/>
+ -->
+<!--
+		<div id="test">
+		90
+		</div>
+-->
+
+        <div id="test">
+        </div>
+
+</body>
+    
+</html>

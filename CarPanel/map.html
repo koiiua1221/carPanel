@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Where you are!</title>
+                <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" type="text/css" />
+                <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+                <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+                <script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
+                <script type="text/javascript">
+                    $("#main").live("pageinit", function() {
+                                    $("#map").height($(window).height());
+                                    if (navigator.geolocation) {
+                                    console.log("starg app..");
+                                    //navigator.geolocation.getCurrentPosition(
+                                    var options = { frequency: 1000,maximumAge:1000,enableHighAccuracy:true };
+                                    navigator.geolocation.watchPosition(
+                                                                        function (pos) { pos2map(pos); },
+                                                                        null,
+                                                                        options
+                                                                        );
+                                    } else {
+                                    alert('This browser does not support Geo Location API.');
+                                    }
+                                    });
+                    var pos2map = function(pos) {
+                        var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                        var gmap = new google.maps.Map(
+                                                       document.getElementById('map'), {
+                                                       zoom: 15, center: latlng, mapTypeControl: false,
+                                                       streetViewControl: false,
+                                                       navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
+                                                       mapTypeId: google.maps.MapTypeId.ROADMAP,
+                                                       });
+                        var marker = new google.maps.Marker({
+                                                            map: gmap, position: latlng, clickable: true,
+                                                            draggable: false, flat: false, visible: true
+                                                            });
+                        //sleep(4);
+                    };
+                    </script>
+                </head>
+    <body>
+        <div data-role="page" id="main">
+            <div data-role="content" id="map-container" style="padding:0px;">
+                <div id="map" style="width:100%;"></div>
+            </div>
+        </div>
+    </body>
+    
+</html>
