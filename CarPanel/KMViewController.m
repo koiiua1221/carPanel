@@ -31,9 +31,9 @@ MKMapView   *mapView;
                                                             0,
                                                             bounds.size.height-_webViewMeter.bounds.size.width,
                                                             bounds.size.width)];
-    
-//    [self.view addSubview:_webViewMap];
-
+#if 1
+    [self.view addSubview:_webViewMap];
+#else
     mapView = [[MKMapView alloc] initWithFrame:CGRectMake(_webViewMeter.bounds.size.width,
                                                           0,
                                                           bounds.size.height-_webViewMeter.bounds.size.width,
@@ -42,18 +42,18 @@ MKMapView   *mapView;
     mapView.delegate = self;
     [self.view addSubview:mapView];
     [mapView.userLocation addObserver:self forKeyPath:@"location" options:0 context:NULL];
+#endif
     
     [self _updateHTMLContent];
 }
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    mapView.centerCoordinate = mapView.userLocation.location.coordinate;
-    // 一度しか現在地に移動しないなら removeObserver する
-    [mapView.userLocation removeObserver:self forKeyPath:@"location"];
-
+    [mapView setCenterCoordinate:mapView.userLocation.location.coordinate animated:YES];
 	MKCoordinateRegion zoom = mapView.region;
 	zoom.span.latitudeDelta = 0.005;
 	zoom.span.longitudeDelta = 0.005;
 	[mapView setRegion:zoom animated:YES];
+    [mapView setUserTrackingMode:MKUserTrackingModeFollowWithHeading animated:YES];
+    [mapView setUserTrackingMode:MKUserTrackingModeFollow animated:YES];
 }
 - (void)didReceiveMemoryWarning
 {
@@ -68,10 +68,10 @@ MKMapView   *mapView;
 
     NSString *pathMeter = [[NSBundle mainBundle] pathForResource:@"meter" ofType:@"html"];
     [_webViewMeter loadRequest:[NSURLRequest requestWithURL:[NSURL fileURLWithPath:pathMeter]]];
-
+#if 1
     NSString *pathMap = [[NSBundle mainBundle] pathForResource:@"map" ofType:@"html"];
     [_webViewMap loadRequest:[NSURLRequest requestWithURL:[NSURL fileURLWithPath:pathMap]]];
-
+#endif
     return;
 }
 
