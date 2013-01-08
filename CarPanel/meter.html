@@ -9,14 +9,14 @@
 	<script src="jquery.jqcanvas-modified.js"></script>
 	<script src="excanvas-modified.js"></script>
 	<script>
+        
 		$(function(){
-          $('#test').speedometer({ percentage: 0});
+          $('#test').speedometer({ percentage: 0, suffix: ' km'});
 
           if(!navigator.geolocation){ alert('navigator.geolocation is not defined.'); return; }
           navigator.geolocation.watchPosition(
                 function(position){
-                    //$('#test').speedometer({ percentage: Math.round( position.coords.speed )|| 0 });
-                    $('#test').speedometer({ percentage: Math.round( position.coords.speed*20 )|| 0 });
+                    $('#test').speedometer({ percentage: Math.round( position.coords.speed )|| 0 , suffix: ' km'});
                 } ,
                 function(){
 //                        alert('Error!');

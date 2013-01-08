@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		342000AF169BE336008DF28A /* jqtouch.min.js in Sources */ = {isa = PBXBuildFile; fileRef = 342000AE169BE336008DF28A /* jqtouch.min.js */; };
+		342000B4169BE8C6008DF28A /* iPhone-map.css in Resources */ = {isa = PBXBuildFile; fileRef = 342000B3169BE8C6008DF28A /* iPhone-map.css */; };
+		342000B6169BE978008DF28A /* car2.png in Resources */ = {isa = PBXBuildFile; fileRef = 342000B5169BE978008DF28A /* car2.png */; };
+		342000B8169BEC3A008DF28A /* Earth-06-june.gif in Resources */ = {isa = PBXBuildFile; fileRef = 342000B7169BEC3A008DF28A /* Earth-06-june.gif */; };
+		342000BA169BFD92008DF28A /* car3.png in Resources */ = {isa = PBXBuildFile; fileRef = 342000B9169BFD92008DF28A /* car3.png */; };
+		342000BC169BFE7E008DF28A /* car5.png in Resources */ = {isa = PBXBuildFile; fileRef = 342000BB169BFE7E008DF28A /* car5.png */; };
 		34B2739E168549F700C4FF01 /* jquery.speedometer.js in Resources */ = {isa = PBXBuildFile; fileRef = 34EA6DFB1685386F001EA040 /* jquery.speedometer.js */; };
 		34B2739F168549F700C4FF01 /* meter.html in Resources */ = {isa = PBXBuildFile; fileRef = 34EA6DFC1685386F001EA040 /* meter.html */; };
 		34B273A0168549F700C4FF01 /* background-broken.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 34EA6DFD1685386F001EA040 /* background-broken.jpg */; };
@@ -48,6 +54,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		342000AE169BE336008DF28A /* jqtouch.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = jqtouch.min.js; sourceTree = "<group>"; };
+		342000B3169BE8C6008DF28A /* iPhone-map.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "iPhone-map.css"; sourceTree = "<group>"; };
+		342000B5169BE978008DF28A /* car2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = car2.png; sourceTree = "<group>"; };
+		342000B7169BEC3A008DF28A /* Earth-06-june.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "Earth-06-june.gif"; sourceTree = "<group>"; };
+		342000B9169BFD92008DF28A /* car3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = car3.png; sourceTree = "<group>"; };
+		342000BB169BFE7E008DF28A /* car5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = car5.png; sourceTree = "<group>"; };
 		34B273A51687458100C4FF01 /* map.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = map.html; sourceTree = "<group>"; };
 		34B273A716874D3900C4FF01 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		34E7D15616888BE700D16767 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -202,6 +214,12 @@
 				34EA6DFF1685386F001EA040 /* background.jpg */,
 				34EA6E001685386F001EA040 /* excanvas-modified.js */,
 				34EA6E011685386F001EA040 /* jquery-1.4.min.js */,
+				342000AE169BE336008DF28A /* jqtouch.min.js */,
+				342000B3169BE8C6008DF28A /* iPhone-map.css */,
+				342000B5169BE978008DF28A /* car2.png */,
+				342000B7169BEC3A008DF28A /* Earth-06-june.gif */,
+				342000B9169BFD92008DF28A /* car3.png */,
+				342000BB169BFE7E008DF28A /* car5.png */,
 			);
 			name = Resource;
 			sourceTree = "<group>";
@@ -293,6 +311,11 @@
 				34EA6DDC168537EB001EA040 /* KMViewController_iPad.xib in Resources */,
 				34B273A61687458100C4FF01 /* map.html in Resources */,
 				34B273A816874D3900C4FF01 /* icon.png in Resources */,
+				342000B4169BE8C6008DF28A /* iPhone-map.css in Resources */,
+				342000B6169BE978008DF28A /* car2.png in Resources */,
+				342000B8169BEC3A008DF28A /* Earth-06-june.gif in Resources */,
+				342000BA169BFD92008DF28A /* car3.png in Resources */,
+				342000BC169BFE7E008DF28A /* car5.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -330,6 +353,7 @@
 				34EA6DC9168537EB001EA040 /* main.m in Sources */,
 				34EA6DCD168537EB001EA040 /* KMAppDelegate.m in Sources */,
 				34EA6DD6168537EB001EA040 /* KMViewController.m in Sources */,
+				342000AF169BE336008DF28A /* jqtouch.min.js in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

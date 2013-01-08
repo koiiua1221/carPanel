@@ -59,8 +59,7 @@ Options:
 			limit: true,
 			minimum: 0,
 			maximum: 100,
-//			suffix: ' %',
-			suffix: ' km',
+			suffix: ' %',
 			animate:true,
 			thisCss: {
 				position: 'relative', /* Very important to align needle with gague. */
