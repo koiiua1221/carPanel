@@ -15,10 +15,11 @@
           if(!navigator.geolocation){ alert('navigator.geolocation is not defined.'); return; }
           navigator.geolocation.watchPosition(
                 function(position){
-                    $('#test').speedometer({ percentage: Math.round( position.coords.speed )|| 0 });
+                    //$('#test').speedometer({ percentage: Math.round( position.coords.speed )|| 0 });
+                    $('#test').speedometer({ percentage: Math.round( position.coords.speed*20 )|| 0 });
                 } ,
                 function(){
-                        alert('Error!');
+//                        alert('Error!');
                 } ,
                 { frequency: 3000,maximumAge:3000,enableHighAccuracy:true }
             );

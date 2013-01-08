@@ -1,52 +1,293 @@
-<!-- ちらつきが発生する為、マップ処理をネイティブで実装中 -->
-<!DOCTYPE html>
+<!doctype html>
 <html>
     <head>
-        <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Where you are!</title>
-                <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" type="text/css" />
-                <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-                <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-                <script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
-                <script type="text/javascript">
-                    $("#main").live("pageinit", function() {
-                                    $("#map").height($(window).height());
-                                    if (navigator.geolocation) {
-                                    console.log("starg app..");
-                                    //navigator.geolocation.getCurrentPosition(
-                                    var options = { frequency: 1000,maximumAge:1000,enableHighAccuracy:true };
-                                    navigator.geolocation.watchPosition(
-                                                                        function (pos) { pos2map(pos); },
-                                                                        null,
-                                                                        options
-                                                                        );
-                                    } else {
-                                    alert('This browser does not support Geo Location API.');
-                                    }
+        <meta charset="UTF-8" />
+        <title>iPhone（アイフォン）用Google Maps API V3　geolocation watchPosition and  clearWatch Demo／ジオロケーションサンプルデモ</title>
+        <meta name="keywords" content="iPhone,アイフォン,スマートフォン,Google Maps API V3,サイト,ホームページ,マップ,地図" />
+        <meta name="description" content="iPhone、アイフォン、スマートフォン用でマップ（地図）を表示させるGoogle Maps API V3サンプル" />
+        <style type="text/css" media="screen">@import "../../jqtouch/jqtouch.min.css";</style>
+        <style type="text/css" media="screen">@import "../../themes/jqt/theme.min.css";</style>
+        <script src="../../jqtouch/jquery.1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../jqtouch/jqtouch.min.js" type="application/x-javascript" charset="utf-8"></script>
+        
+        <!--ここからGoogle Maps API v3 -->
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <!--gears geolocation-->
+        <script type="text/javascript" src="http://code.google.com/apis/gears/gears_init.js"></script>
+        
+        
+        <script type="text/javascript" charset="utf-8">
+            var jQT = new $.jQTouch({
+                                    icon: 'jqtouch.png',
+                                    addGlossToIcon: false,
+                                    startupScreen: 'jqt_startup.png',
+                                    statusBar: 'black',
+                                    slideSelector: '.slide'
                                     });
-                    var pos2map = function(pos) {
-                        var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-                        var gmap = new google.maps.Map(
-                                                       document.getElementById('map'), {
-                                                       zoom: 15, center: latlng, mapTypeControl: false,
-                                                       streetViewControl: false,
-                                                       navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
-                                                       mapTypeId: google.maps.MapTypeId.ROADMAP,
-                                                       });
-                        var marker = new google.maps.Marker({
-                                                            map: gmap, position: latlng, clickable: true,
-                                                            draggable: false, flat: false, visible: true
-                                                            });
-                    };
-                    </script>
-                </head>
+            
+            $(function(){
+              
+              $('#togglefloaty').click(function(){
+                                       $('.floaty').toggleFloaty();
+                                       $(this).removeClass('active');
+                                       return false;
+                                       });
+              
+              $('#hidefloaty').click(function(){
+                                     $('.floaty').hideFloaty();
+                                     $(this).removeClass('active');
+                                     return false;
+                                     });
+              
+              $('.floaty').makeFloaty({
+                                      spacing: 20,
+                                      time: '1s'
+                                      });
+              
+              });
+            </script>
+        <style>#inside{
+            color : black;
+            position: fixed;
+            top: 90px;
+            left:40px;
+            padding:10px;
+            background-color:transparent; /* 背景色 */
+            filter:alpha(opacity=85);
+            -moz-opacity:0.8;
+            opacity:0.8;
+        }
+            </style>
+        <link rel="stylesheet" href="http://waox.main.jp/iPhone/css/iPhone-map.css" type="text/css" />
+        <script type="text/javascript">
+            　//◆個別に指定する初期表示の設定
+            var zoom = 12;
+            
+            var mapTypeId = google.maps.MapTypeId.ROADMAP //通常のデフォルト
+            //var mapTypeId = google.maps.MapTypeId.SATELLITE //航空写真タイル
+            //var mapTypeId = google.maps.MapTypeId.HYBRID //航空写真タイルと主要な機能（道路、地名）のタイル レイヤの組み合わせ
+            //var mapTypeId = google.maps.MapTypeId.TERRAIN //起伏を示すタイル（高度や水系）
+            </script>
+        <script type="text/javascript">
+            //<![CDATA[
+            var watchId=0;
+            var initialLocation;
+            var tokyo = new google.maps.LatLng(35.68971, 139.69168);
+            var browserSupportFlag =  new Boolean();
+            var map;
+            var infowindow = new google.maps.InfoWindow();
+            var geowindow = new google.maps.InfoWindow();
+            var position;
+            var ini;
+            
+            function initialize()
+            {
+                var myOptions =
+                {
+                    
+                    disableDefaultUI: false,//◆API のデフォルトの UI 設定をオフ(無効)にしたい場合は”true”
+                    
+                    //◆ナビゲーションコントロール
+                    navigationControl: true,
+                    navigationControlOptions:
+                    {
+                        //◆通常 ズームコントロール
+                        //style: google.maps.NavigationControlStyle.DEFAULT,
+                        style: google.maps.NavigationControlStyle.SMALL,
+                        position: google.maps.ControlPosition.LEFT_TOP
+                        //◆Android ズームコントロール
+                        //style:google.maps.NavigationControlStyle.ANDROID,
+                        //position: google.maps.ControlPosition.BOTTOM_CENTER
+                    },
+                    //◆マップタイプコントロール
+                    mapTypeControl: true,
+                    mapTypeControlOptions:
+                    {
+                        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+                        //style: google.maps.MapTypeControlStyle.DEFAULT,
+                        //style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                        position: google.maps.ControlPosition.TOP_RIGHT
+                    },
+                    //◆スケールコントロール
+                    scaleControl: true,
+                    scaleControlOptions:
+                    {
+                        //◆指定無しの場合左下になる
+                        //position: google.maps.ControlPosition.RIGHT_TOP
+                        //position: google.maps.ControlPosition.TOP_CENTER
+                        //position: google.maps.ControlPosition.BOTTOM_CENTER
+                    },
+                    
+                    zoom: zoom,
+                    mapTypeId: mapTypeId
+                };
+                
+                map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+                startLocationTracking();
+                
+            }
+            
+            function startLocationTracking(){
+                
+                　　divblock('inside');//◆watchPosition gif表示
+                　　divblock('mylocation');//◆mylocation表示
+                
+                //◆座標収得
+                　　if(navigator.geolocation)
+                　　{
+                    　　browserSupportFlag = true;
+                    watchId = navigator.geolocation.watchPosition(function(position)
+                                                                  {
+                                                                  initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+                                                                  map.setCenter(initialLocation);
+                                                                  showCurrentLocation(position);//◆現在地座標表示
+                                                                  　        　　　　　　　　//◆現在地マーカー
+                                                                  　　　　　　　　　　　　var ini = new google.maps.Marker(
+                                                                                                               　　　　　　　　　　　　{
+                                                                                                               　　　　　　　　　　　　position:initialLocation,  //マーカ位置
+                                                                                                               　　　　　　　　　　　　map: map,
+                                                                                                               　　　　　　　　　　　　title: '現在位置',  //タイトル位置
+                                                                                                               　　　　　　　　　　　　draggable: false,  //アイコンの移動の有効無効
+                                                                                                               　　　　　　　　　　　　icon: 'http://waox.main.jp/maps/icon/car2.png',//アイコン指定
+                                                                                                               animation: google.maps.Animation.none
+                                                                                                               　　　　　　　　　　　　});
+                                                                  
+                                                                  　　　　},
+                                                                  　　　　function()
+                                                                  　　　　{
+                                                                  　　　　handleNoGeolocation(browserSupportFlag);
+                                                                  
+                                                                  　　　　});
+                    　　} 
+                　　else if (google.gears) 
+                　　{
+                    　　browserSupportFlag = true;
+                    　　var geo = google.gears.factory.create('beta.geolocation');
+                    　　watchId = geo.watchPosition(function(position) 
+                                                  　　　　{
+                                                  　　　　	initialLocation = new google.maps.LatLng(position.latitude,position.longitude);
+                                                  　　    map.setCenter(initialLocation);
+                                                  showCurrentLocation(position);//◆現在地座標表示
+                                                  　        　　　　　　　　//◆現在地マーカー
+                                                  　　　　　　　　　　　　var ini = new google.maps.Marker(
+                                                                                               　　　　　　　　　　　　{  
+                                                                                               　　　　　　　　　　　　position:initialLocation,  //マーカ位置
+                                                                                               　　　　　　　　　　　　map: map,  
+                                                                                               　　　　　　　　　　　　title: '現在位置',  //タイトル位置
+                                                                                               　　　　　　　　　　　　draggable: false,  //アイコンの移動の有効無効
+                                                                                               　　　　　　　　　　　　icon: 'http://waox.main.jp/maps/icon/car2.png',//アイコン指定
+                                                                                               animation: google.maps.Animation.none
+                                                                                               　　　　　　　　　　　　});  
+                                                  　　　　}, 
+                                                  　　　　function() 
+                                                  　　　　{
+                                                  　　　　handleNoGeolocation(browserSupportFlag);
+                                                  　　　　});
+                    　　} 
+                　　else 
+                　　{
+                    　 // Browser doesn't support Geolocation
+                    　　browserSupportFlag = false;
+                    　　handleNoGeolocation(browserSupportFlag);
+                    　　}
+                
+                google.maps.event.addListener(map, 'dragend', function() //◆地図を移動（ドラッグ）するとclearWatch
+                                              {
+                                              if (watchId > 0) 
+                                              {
+                                              navigator.geolocation.clearWatch(watchId);
+                                              divnone('inside');//◆watchPosition gif表示
+                                              divnone('mylocation');//◆mylocation表示
+                                              
+                                              }
+                                              });
+                
+                
+            }
+            
+            
+            
+            
+            
+            //◆現在地座標表示
+            function showCurrentLocation(position)
+            {
+//                document.getElementById("mylocation").innerHTML = "Lat:" + position.coords.latitude.toFixed(7) + " , Lng:" + position.coords.longitude.toFixed(7) ;
+            }
+            
+            
+            function handleNoGeolocation(errorFlag) 
+            {
+                　　if (errorFlag == true) 
+                　　{
+                    　　initialLocation = tokyo;
+                    　　contentString = "位置を特定できません。サポートされていないブラウザです。東京都庁を表示します。";
+                    　　} 
+                　　else 
+                　　{
+                    　　initialLocation = tokyo;
+                    　　contentString = "位置を特定できません。サポートされていないブラウザです。東京都庁を表示します。";
+                    　　}
+                　　map.setCenter(initialLocation);
+                　　geowindow  .setContent(contentString);
+                　　geowindow  .setPosition(initialLocation);
+                　　geowindow  .open(map);
+                
+            }
+            
+            //div表示の切換え
+            function divblock(id)
+            {  
+                var ele = document.getElementById(id);  
+                ele.style.display = 'block';  
+                
+            }  
+            
+            //div非表示の切換え
+            function divnone(id)
+            {  
+                var ele = document.getElementById(id);  
+                ele.style.display = 'none';  
+                
+            }   
+            window.onload=initialize;//◆
+            //]]>
+            
+            </script> 
+        
+        
+    </head>
     <body>
-        <div data-role="page" id="main">
-            <div data-role="content" id="map-container" style="padding:0px;">
-                <div id="map" style="width:100%;"></div>
+        <div id="map">
+<!--
+            <div class="toolbar">
+                <h1>clearWatch</h1>
+                <a class="back" target="_webapp" href="../main/index.html#extensions">Home</a>
+                <a class="button flip" id="infoButton" href="#about">説明</a>
+-->
+            </div>
+            
+            <input type="button" value="現在位置を追跡" onclick="startLocationTracking()" style="width : 100%;" />
+            <div id="mylocation" align="center"></div>
+            <div id="map_canvas" ></div>
+            <div id="inside" style="font-size : 12px;"><img src="http://waox.main.jp/maps/gif/Earth-06-june.gif" width="30" height="30" border="0" /></div>
+        </div>
+        
+        </div>
+        <div id="about">
+            <div class="toolbar">
+                <h1>地図の説明</h1>
+                <a class="button flip" id="infoButton" href="#map">Back</a>
+            </div>
+            <div style="font-size: 1.0em; text-align: left; margin: 20px 20px 160px; font-family: Marker felt;">
+                
+                <p><b style="margin-bottom : 10px;">watchPosition+clearWatch</b></p>
+                <p>geolocationのwatchPositionだけでは、現在地座標を追跡しつづけてしまうので、地図をドラッグしたら追跡を停止するようにdragendイベントをclearWatch（）へ渡してみた。</p>
+                
+                
+                　　　　　　<a style="margin:30px 10px;color:rgba(0,0,0,.9)" href="#map" class="whiteButton goback">Back</a> 
             </div>
         </div>
     </body>
-    
 </html>
